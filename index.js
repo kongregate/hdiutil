@@ -60,21 +60,21 @@ function isEncrypted(path, ret) {
 	});
 }
 
-function attach(path, ret, options) {
-	if (typeof path !== 'string') path = String(path);
+function attach(filename, ret, options) {
+	if (typeof filename !== 'string') filename = String(filename);
 	if (typeof ret !== 'function') ret = function(){};
 	if (typeof options !== 'object') options = {};
-	info(path, function(error, mountPath, devicePath) {
+	info(filename, function(error, mountPath, devicePath) {
 		if (error || mountPath) return ret(error);
-		isEncrypted(path, function(error, encrypted) {
+		isEncrypted(filename, function(error, encrypted) {
 			if (error) return ret(error);
 
 			var prompt = options.prompt,
 				password = options.password,
-				args = ['attach', path, '-plist', '-stdinpass'],
+				args = ['attach', filename, '-plist'],
 				repeatTimes = (encrypted && typeof password !== 'string' && options.repeat);
 
-			if (typeof prompt !== 'string') prompt = 'Enter password to access ' + path.basename(path);
+			if (typeof prompt !== 'string') prompt = 'Enter password to access ' + path.basename(filename);
 			if (typeof repeatTimes !== 'number' || isNaN(repeatTimes) || repeatTimes < 0 || repeatTimes % 1) repeatTimes = 0;
 
 			if (options.readonly) args.push('-readonly');
